@@ -1,8 +1,21 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
+
+const { BASE_PATH } = process.env
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
-};
+  basePath: BASE_PATH,
+  output: 'standalone',
+  reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: '/api/health-check',
+        destination: `http://localhost:3000${BASE_PATH}/api/health-check`,
+        basePath: false,
+      },
+    ]
+  },
+}
 
-export default nextConfig;
+export default nextConfig
