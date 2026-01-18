@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   const { access_token } = await exchangeNaverToken(code, state)
   const naverUser = await getNaverUser(access_token)
 
-  const { userId } = await findOrCreateNaverUser(naverUser)
+  await findOrCreateNaverUser(naverUser)
   const token = await createNaverMagicLink(
     naverUser.email ?? `naver_${naverUser.id}@no-email.local`,
   )
