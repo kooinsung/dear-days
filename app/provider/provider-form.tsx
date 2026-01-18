@@ -43,7 +43,7 @@ export default function ProviderTestForm({ initialUser }: ProviderTestProps) {
     if (provider === 'google' || provider === 'kakao') {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: window.location.origin + '/provider' },
+        options: { redirectTo: `${window.location.origin}/provider` },
       })
       if (error) {
         setMessage(`연결 실패: ${error.message}`)
