@@ -22,7 +22,10 @@
     "paths": {
       "@/libs/*": ["app/libs/*"],
       "@/components/*": ["app/components/*"],
-      "@/login/*": ["app/login/*"]
+      "@/login/*": ["app/login/*"],
+      "@/hooks/*": ["app/hooks/*"],
+      "@/stores/*": ["app/stores/*"],
+      "@/styles/*": ["app/styles/*"]
     }
   },
   "include": [

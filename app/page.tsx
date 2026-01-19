@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createSupabaseServer } from '@/libs/supabase/server'
+import { HomePageClient } from './home-page-client'
 
 export default async function HomePage() {
   const supabase = await createSupabaseServer()
@@ -9,12 +10,5 @@ export default async function HomePage() {
     redirect('/login')
   }
 
-  const { data: events } = await supabase.from('events').select('*')
-
-  return (
-    <div>
-      <h1>메인 페이지</h1>
-      <pre>{JSON.stringify(events, null, 2)}</pre>
-    </div>
-  )
+  return <HomePageClient />
 }

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import { QueryProvider } from '@/libs/providers/query-provider'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -8,8 +9,8 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: '',
-  description: '',
+  title: 'Dear Days',
+  description: '소중한 날들을 기억하세요',
   ...viewport,
 }
 
@@ -20,7 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   )
 }
