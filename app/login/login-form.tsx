@@ -6,6 +6,7 @@ import { useEffect, useState, useTransition } from 'react'
 import { generateNaverAuthUrl } from '@/libs/naver/oauth'
 import { createSupabaseBrowser } from '@/libs/supabase/browser'
 import { login, logout } from './actions'
+import * as styles from './login-form.css'
 
 interface LoginFormProps {
   initialUser: User | null
@@ -66,49 +67,85 @@ export default function LoginForm({ initialUser }: LoginFormProps) {
   }
 
   return (
-    <div style={{ padding: 24 }}>
-      <h1>로그인</h1>
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Dear Days</h1>
 
-      {user ? (
-        <>
-          <p>로그인된 사용자: {user.email ?? user.id}</p>
-          <button type="button" onClick={handleLogout}>
-            로그아웃
-          </button>
-        </>
-      ) : (
-        <>
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="이메일"
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호"
-          />
+        {user ? (
+          <div className={styles.userInfo}>
+            <p className={styles.userEmail}>{user.email ?? user.id}</p>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className={`${styles.button} ${styles.primaryButton}`}
+              disabled={isPending}
+            >
+              로그아웃
+            </button>
+          </div>
+        ) : (
+          <>
+            {message && <div className={styles.message}>{message}</div>}
 
-          <button type="button" onClick={handleEmailLogin} disabled={isPending}>
-            Email 로그인
-          </button>
+            <div className={styles.formGroup}>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="이메일"
+                className={styles.input}
+              />
+            </div>
 
-          <hr />
+            <div className={styles.formGroup}>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="비밀번호"
+                className={styles.input}
+              />
+            </div>
 
-          <button type="button" onClick={() => oauthLogin('google')}>
-            Google
-          </button>
-          <button type="button" onClick={() => oauthLogin('kakao')}>
-            Kakao
-          </button>
-          <button type="button" onClick={naverLogin}>
-            Naver
-          </button>
-        </>
-      )}
+            <div className={styles.formGroup}>
+              <button
+                type="button"
+                onClick={handleEmailLogin}
+                disabled={isPending}
+                className={`${styles.button} ${styles.primaryButton}`}
+              >
+                {isPending ? '로그인 중...' : '이메일 로그인'}
+              </button>
+            </div>
 
-      {message && <p>{message}</p>}
+            <div className={styles.divider} />
+
+            <div className={styles.oauthButtonGroup}>
+              <button
+                type="button"
+                onClick={() => oauthLogin('google')}
+                className={`${styles.button} ${styles.secondaryButton}`}
+              >
+                Google 로그인
+              </button>
+              <button
+                type="button"
+                onClick={() => oauthLogin('kakao')}
+                className={`${styles.button} ${styles.secondaryButton}`}
+              >
+                Kakao 로그인
+              </button>
+              <button
+                type="button"
+                onClick={naverLogin}
+                className={`${styles.button} ${styles.secondaryButton}`}
+              >
+                Naver 로그인
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   )
 }
