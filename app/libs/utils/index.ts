@@ -1,4 +1,5 @@
-export { getApiUrl } from './base-path'
+// API 호출용 URL 헬퍼
+export { getApiUrl } from './api-url'
 export {
   calculateDday,
   dayjs,
