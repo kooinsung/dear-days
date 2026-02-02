@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { withBasePath } from '@/libs/oauth/urls'
 import { createSupabaseServer } from '@/libs/supabase/server'
 
 function normalizeNext(next: string): string {
@@ -19,9 +18,7 @@ export async function GET(req: NextRequest) {
   const next = normalizeNext(searchParams.get('next') ?? '/')
 
   if (!code) {
-    return NextResponse.redirect(
-      `${origin}${withBasePath('/login')}?error=oauth_code_missing`,
-    )
+    return NextResponse.redirect(`${origin}/login?error=oauth_code_missing`)
   }
 
   const supabase = await createSupabaseServer()
@@ -42,10 +39,8 @@ export async function GET(req: NextRequest) {
       params.set('error_code', String(errCode))
     }
 
-    return NextResponse.redirect(
-      `${origin}${withBasePath('/login')}?${params.toString()}`,
-    )
+    return NextResponse.redirect(`${origin}/login?${params.toString()}`)
   }
 
-  return NextResponse.redirect(`${origin}${withBasePath(next)}`)
+  return NextResponse.redirect(`${origin}${next}`)
 }

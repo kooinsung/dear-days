@@ -219,6 +219,7 @@ export function useCreateEvent() {
         getApiUrl('/api/events/create'),
         newEvent,
       )
+
       if (!res.data) {
         throw new Error('Failed to create event')
       }

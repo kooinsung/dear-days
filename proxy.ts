@@ -1,21 +1,16 @@
 import { createServerClient } from '@supabase/ssr'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import {
-  buildLoginRedirect,
-  isPublicPath,
-  stripBasePath,
-} from '@/libs/auth/route-policy'
+import { buildLoginRedirect, isPublicPath } from '@/libs/auth/route-policy'
 import { updateSession } from '@/libs/supabase/proxy'
 
 export async function proxy(request: NextRequest) {
   const response = await updateSession(request)
 
-  const pathnameWithBase = request.nextUrl.pathname
-  const pathname = stripBasePath(pathnameWithBase)
+  const pathname = request.nextUrl.pathname
 
   // 공개 경로는 통과하되, 홈('/')은 항상 로그인 체크가 필요함
-  if (isPublicPath(pathnameWithBase) && pathname !== '/') {
+  if (isPublicPath(pathname) && pathname !== '/') {
     return response
   }
 
@@ -49,7 +44,7 @@ export async function proxy(request: NextRequest) {
 
   if (!user) {
     return NextResponse.redirect(
-      buildLoginRedirect(pathnameWithBase, request.nextUrl.origin),
+      buildLoginRedirect(pathname, request.nextUrl.origin),
     )
   }
 
