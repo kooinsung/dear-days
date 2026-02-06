@@ -1,47 +1,61 @@
-// 런타임 환경 변수 검증 및 타입 안전성 제공
+import { createEnv } from '@t3-oss/env-nextjs'
+import { z } from 'zod'
 
-// 앱 시작 시 검증 (빠른 실패)
-export function validateEnv() {
-  const requiredVars = [
-    'NEXT_PUBLIC_SUPABASE_URL',
-    'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
-    'SUPABASE_SERVICE_ROLE_KEY',
-    'RESEND_API_KEY',
-    'RESEND_FROM_EMAIL',
-    'KASI_SERVICE_KEY',
-    'NEXT_PUBLIC_WEB_BASE_URL',
-  ] as const
+export const env = createEnv({
+  /**
+   * Server-side Environment Variables
+   * 절대 브라우저에 노출되지 않음
+   */
+  server: {
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+    RESEND_API_KEY: z.string().min(1),
+    RESEND_FROM_EMAIL: z.string().email(),
+    KASI_SERVICE_KEY: z.string().min(1),
 
-  const missing: string[] = []
-  for (const key of requiredVars) {
-    const value = process.env[key]
-    if (!value || value === '') {
-      missing.push(key)
-    }
-  }
-  if (missing.length > 0) {
-    throw new Error(
-      `Missing required environment variables: ${missing.join(', ')}`,
-    )
-  }
-}
+    // Naver OAuth (선택사항)
+    NAVER_CLIENT_SECRET: z.string().optional(),
+  },
 
-// 타입 안전 환경 변수 export
-// validateEnv() 호출 후에는 모든 값이 존재함이 보장됨
-export const env = {
-  // biome-ignore lint/style/noNonNullAssertion: validateEnv() guarantees these values exist
-  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
-    // biome-ignore lint/style/noNonNullAssertion: validateEnv() guarantees these values exist
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-  // biome-ignore lint/style/noNonNullAssertion: validateEnv() guarantees these values exist
-  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  // biome-ignore lint/style/noNonNullAssertion: validateEnv() guarantees these values exist
-  RESEND_API_KEY: process.env.RESEND_API_KEY!,
-  // biome-ignore lint/style/noNonNullAssertion: validateEnv() guarantees these values exist
-  RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL!,
-  // biome-ignore lint/style/noNonNullAssertion: validateEnv() guarantees these values exist
-  KASI_SERVICE_KEY: process.env.KASI_SERVICE_KEY!,
-  // biome-ignore lint/style/noNonNullAssertion: validateEnv() guarantees these values exist
-  NEXT_PUBLIC_WEB_BASE_URL: process.env.NEXT_PUBLIC_WEB_BASE_URL!,
-}
+  /**
+   * Client-side Environment Variables
+   * NEXT_PUBLIC_ 접두사 필수
+   */
+  client: {
+    NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+    NEXT_PUBLIC_WEB_BASE_URL: z.string().url(),
+
+    // Naver OAuth (선택사항)
+    NEXT_PUBLIC_NAVER_CLIENT_ID: z.string().optional(),
+  },
+
+  /**
+   * Runtime Environment Variables
+   * Next.js의 process.env를 매핑
+   */
+  runtimeEnv: {
+    // Server
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
+    KASI_SERVICE_KEY: process.env.KASI_SERVICE_KEY,
+    NAVER_CLIENT_SECRET: process.env.NAVER_CLIENT_SECRET,
+
+    // Client
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_WEB_BASE_URL: process.env.NEXT_PUBLIC_WEB_BASE_URL,
+    NEXT_PUBLIC_NAVER_CLIENT_ID: process.env.NEXT_PUBLIC_NAVER_CLIENT_ID,
+  },
+
+  /**
+   * 빌드 시 검증 스킵 옵션 (개발 환경에서만 사용)
+   */
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+
+  /**
+   * 빈 문자열을 undefined로 처리
+   */
+  emptyStringAsUndefined: true,
+})
