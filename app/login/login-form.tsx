@@ -106,7 +106,7 @@ export default function LoginForm({ initialUser }: LoginFormProps) {
   }
 
   // OAuth
-  const oauthLogin = async (provider: 'google' | 'kakao') => {
+  const oauthLogin = async (provider: 'google' | 'kakao' | 'apple') => {
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
@@ -303,6 +303,16 @@ export default function LoginForm({ initialUser }: LoginFormProps) {
                 )}
               >
                 Kakao 로그인
+              </button>
+              <button
+                type="button"
+                onClick={() => oauthLogin('apple')}
+                className={cx(
+                  button({ variant: 'secondary' }),
+                  css({ width: '100%' }),
+                )}
+              >
+                Apple 로그인
               </button>
               <button
                 type="button"

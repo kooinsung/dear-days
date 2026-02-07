@@ -18,7 +18,7 @@ export type NotificationStatus = 'PENDING' | 'SENT' | 'FAILED' | 'CANCELLED'
 
 export type PlanType = 'FREE' | 'PREMIUM' | 'ENTERPRISE'
 
-export type AuthProvider = 'email' | 'google' | 'kakao' | 'naver'
+export type AuthProvider = 'email' | 'google' | 'kakao' | 'naver' | 'apple'
 
 export interface Event {
   id: string
