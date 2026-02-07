@@ -17,6 +17,9 @@ import { css, cx } from '@/styled-system/css'
 import { vstack } from '@/styled-system/patterns'
 import { button, card } from '@/styled-system/recipes'
 
+// Force dynamic rendering (disable static generation)
+export const dynamic = 'force-dynamic'
+
 type SubscriptionInfo = {
   planType: PlanType | null
   expiresAt: string | null
